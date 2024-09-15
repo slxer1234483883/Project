@@ -1,97 +1,157 @@
-# Final-Project
+## Fruit.ai Project by Aman Rana
 
-This is a beginner Solidity Smart Contract to demonstrate the basics of Solidity. 
+## Table of Contents
 
-## Description
+- [Features](#features)
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+- [Example JSON](#example-json-for-creating-a-new-faq)
+- [Error Handling](#error-handling)
+- [FAQ Model](#faq-model)
+- [Frontend Overview](#frontend-overview)
+- [Routes](#routes-in-the-application)
+- [Responsive Design](#responsive-design)
 
-The contract contains 3 state variables including the Token Name, Token Abbreviation and Token Supply. 
+## Features
 
-It has a mapping (Adddress => uint) named balances mapping Addresses to their respective balances. 
+- **Retrieve All FAQs:** Fetch a complete list of FAQs.
+- **Get FAQ by ID:** Obtain specific details for any FAQ using its ID.
+- **Create FAQ:** Add new FAQs to the system.
+- **Update FAQ:** Edit existing FAQ content.
+- **Delete FAQ:** Remove an FAQ from the database.
 
-It also contains 2 functions namely Mint and Burn which work as their name would suggest. Minting increases the total supply as well as the balance of person who runs this function by a certain value passed to the function as a parameter. 
+## Requirements
 
-Burn function checks whether the person who run the function has enough tokens and if they do, it reduces that amount of token from that person's balance as well as from the total supply. It utilizes the require keyword which throws an error if the condition is not met.
+- Python 3.9+
+- Django 3.2+
+- Django REST Framework
+- React.js
 
+## Setup
 
-## Getting Started
+### Backend Setup
 
-### Executing program
+1. Clone the repository:
+   \`\`\`bash
+   git clone https://github.com/MrFranklink/Fruit.ai.git
+   \`\`\`
 
-To run this program, you can use Remix, an online Solidity IDE. Go to https://remix.ethereum.org/.
+2. Move to the backend folder:
+   \`\`\`bash
+   cd server
+   \`\`\`
 
-Once you are on the website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., Test.sol). Copy and paste the following code into the file:
+3. Install the necessary dependencies:
+   \`\`\`bash
+   pip install -r requirements.txt
+   \`\`\`
 
-```javascript
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+4. Apply database migrations:
+   \`\`\`bash
+   python manage.py migrate
+   \`\`\`
 
-/*
-       REQUIREMENTS
-    1. Your contract will have public variables that store the details about your coin (Token Name, Token Abbrv., Total Supply)
-    2. Your contract will have a mapping of addresses to balances (address => uint)
-    3. You will have a mint function that takes two parameters: an address and a value. 
-       The function then increases the total supply by that number and increases the balance 
-       of the “sender” address by that amount
-    4. Your contract will have a burn function, which works the opposite of the mint function, as it will destroy tokens. 
-       It will take an address and value just like the mint functions. It will then deduct the value from the total supply 
-       and from the balance of the “sender”.
-    5. Lastly, your burn function should have conditionals to make sure the balance of "sender" is greater than or equal 
-       to the amount that is supposed to be burned.
-*/
+5. Start the backend server:
+   \`\`\`bash
+   python manage.py runserver
+   \`\`\`
 
-contract MyToken {
+### Frontend Setup
 
-    // public variables here
+1. Go to the frontend directory:
+   \`\`\`bash
+   cd frontend
+   \`\`\`
 
-    string public tokenName="META";
-    string public tokenAbbrv="Mta";
+2. Install frontend dependencies:
+   \`\`\`bash
+   npm install
+   \`\`\`
 
-    uint public totalSupply = 0;
-    
-    // mapping variable here
+3. Set up environment variables by creating a \`.env\` file in the root directory:
+   \`\`\`bash
+   REACT_APP_API_URL=http://localhost:8000/api
+   \`\`\`
 
-    mapping(address => uint )public balances;
+4. Start the frontend server:
+   \`\`\`bash
+   npm start
+   \`\`\`
 
-    // mint function
+## Running the Application
 
-    function mint (address _address,uint _value) public 
-    {
-        totalSupply += _value;
-        balances[_address] += _value;
-    }
+Ensure both frontend and backend servers are running simultaneously. The frontend will connect with the backend API to display the FAQ content.
 
-    // burn function
-     function burn (address _address,uint _value) public 
-    {
-        if(balances[_address] >= _value)
-        {
-        totalSupply -= _value;
-        balances[_address] -= _value;
-        }
-    }
+## API Endpoints
 
+- **GET** \`/faqs/\` - Retrieve all FAQs.
+- **GET** \`/faqs/<id>/\` - Retrieve a specific FAQ by its ID.
+- **POST** \`/faqs/\` - Create a new FAQ.
+- **PUT** \`/faqs/<id>/\` - Update an existing FAQ.
+- **DELETE** \`/faqs/<id>/\` - Delete an FAQ.
+
+## Example JSON for Creating a New FAQ
+
+\`\`\`json
+{
+"name": "John Doe",
+"title": "How to reset password?",
+"description": "You can reset your password by clicking on 'Forgot Password' on the login page.",
+"image_url": "https://example.com/image.png"
 }
-```
+\`\`\`
 
-To compile the code, click on the "Solidity Compiler" tab in the left-hand sidebar. Make sure the "Compiler" option is set to "0.8.18" (or another compatible version), and then click on the "Compile Test.sol" button.
+## Error Handling
 
-Once the code is compiled, you can deploy the contract by clicking on the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the "MyToken" contract from the dropdown menu, and then click on the "Deploy" button.
+- **404 Not Found:** Returned when the FAQ is not found.
+- **400 Bad Request:** Returned when there is an issue with the request data, such as missing fields or invalid values.
 
-Once the contract is deployed, you can interact with it by calling the mint or burn function. Click on the "MyToken" contract in the left-hand sidebar, and then click on the "mint" function. 
+## FAQ Model
 
-## Help
+The \`Faq\` model contains the following attributes:
 
-Make sure to have the compiler option set to 0.8.18 to avoid version depenedency errors. 
-```
-pragma solidity ^0.8.18
-```
+- \`faqs_id\`: A unique ID for each FAQ.
+- \`name\`: Name of the person submitting the FAQ (up to 50 characters).
+- \`title\`: A short title for the FAQ (up to 50 characters).
+- \`description\`: Detailed response to the FAQ.
+- \`image_url\`: Optional field for an image URL related to the FAQ.
 
-## Authors
+## Frontend Overview
 
-  
-[Aman Rana]
+### Login Page
 
+- You can log in using any username and password (dummy credentials).
+- After logging in, you’ll be redirected to the homepage.
 
-## License
+### Homepage
 
-This project is licensed under the MIT License - see the LICENSE.md file for details
+The homepage has buttons that lead to different sections:
+
+- **Chat Button:** Takes you to a brief splash screen before loading the ChatApp page.
+- **Translate Button:** Redirects to a translation page (placeholder functionality).
+- **FAQs Button:** Displays all FAQs from the backend API. Ensure the backend is running to access the data.
+- **About Button:** Provides details about the app.
+
+## Routes in the Application
+
+- **/**: Displays the login page.
+- **/home**: Homepage after login.
+- **/translate**: Translation page.
+- **/splash**: Brief splash screen before loading ChatApp.
+- **/chatapp**: Main chat application page.
+- **/about**: About the application.
+- **/faq**: List of FAQs.
+
+## Responsive Design
+
+The application is optimized for various device resolutions, including:
+
+- iPhone 14 Pro Max (430x932)
+- iPhone XR (414x896)
+- iPhone SE (375x667)
+- Google Pixel 7 (412x915)
+- Samsung Galaxy S20 (412x915)
+
+EOL
